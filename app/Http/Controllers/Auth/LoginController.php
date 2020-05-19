@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -26,7 +27,18 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    //protected $redirectTo = RouteServiceProvider::HOME;
+    protected function authenticated(Request $request, $user)
+    {
+        $roles = $user->roles()->get()->pluck('name')->toArray();
+        if(in_array('admin', $roles)){
+           return redirect('/home');
+        }else{
+            if(in_array('paciente', $roles)) {
+                return redirect('/paciente');
+            }
+        }
+    }
 
     /**
      * Create a new controller instance.
